@@ -5,11 +5,12 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Miki.AppDbContext;
+using Miki.Models.Base;
 using Miki.Repositories.Interfaces;
 
 namespace Miki.Repositories.Impl
 {
-    public class BaseRepository<T> : IBaseRepository<T> where T:class
+    public class BaseRepository<T> : IBaseRepository<T> where T:class, IBaseModel
     {
         private readonly MainDbContext _context;
         internal DbSet<T> dbSet;
@@ -23,6 +24,7 @@ namespace Miki.Repositories.Impl
         }
 
         public virtual void Update(T item) {
+            item.UpdatedDate = DateTime.Now;
             dbSet.Attach(item);
             _context.Entry(item).State = EntityState.Modified;
         }
@@ -46,6 +48,8 @@ namespace Miki.Repositories.Impl
             string includeProperties = "") {
             IQueryable<T> query = dbSet;
 
+            query = query.Where(_ => _.IsDeleted == false);
+
             if (filter != null) {
                 query = query.Where(filter);
             }
@@ -66,6 +70,10 @@ namespace Miki.Repositories.Impl
         public virtual async Task<T> GetById(long id) {
             var result = await dbSet.FindAsync(id);
             return result;
+        }
+
+        public async Task Save() {
+            await _context.SaveChangesAsync();
         }
 
     }

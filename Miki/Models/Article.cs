@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace Miki.Models
 {
-    public class Article
+    public class Article : BaseModel
     {
-        [Key]
-        public long Id { get; set; }
         [StringLength(50, MinimumLength = 1, ErrorMessage = "First name must be between 2 and 50 characters")]
+        [DataType(DataType.Text)]
         public string Name { get; set; }
     }
 }

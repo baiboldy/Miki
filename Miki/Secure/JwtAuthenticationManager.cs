@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using Miki.AppDbContext;
 using Miki.Dtos;
 using Miki.Helpers;
+using Miki.Repositories.Interfaces;
 
 namespace Miki.Secure
 {
@@ -17,15 +18,17 @@ namespace Miki.Secure
     {
         private readonly string _key;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserRepository _userRepository;
 
-        public JwtAuthenticationManager(IConfiguration configuration, IUnitOfWork unitOfWork) {
+        public JwtAuthenticationManager(IConfiguration configuration, IUnitOfWork unitOfWork, IUserRepository userRepository) {
             _key = configuration.GetValue<string>("AuthKey");
              _unitOfWork = unitOfWork;
+             _userRepository = userRepository;
         }
 
         public async Task<string> Authenticate(string username, string password) {
             var hashedPassword = Hashing.ToMD5(password);
-            var results = await _unitOfWork.UserRepository.GetAll(
+            var results = await _userRepository.GetAll(
                 _ => _.Email == username && _.Password == hashedPassword);
             var result = results.Select(_ => new UserDto {
                 Id = _.Id,

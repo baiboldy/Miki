@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Storage;
 using Miki.Dtos;
 using Miki.Models;
 using Miki.Repositories.Impl;
@@ -17,30 +18,11 @@ namespace Miki.AppDbContext
             _context = context;
         }
 
-        public BaseRepository<Article> ArticleRepository {
-            get {
-                if (this.articleRepository == null) {
-                    this.articleRepository = new BaseRepository<Article>(_context);
-                }
-
-                return this.articleRepository;
-            }
+        public IDbContextTransaction BeginTransaction() {
+           var result =  _context.Database.BeginTransaction();
+           return result;
         }
 
-        public BaseRepository<User> UserRepository {
-            get {
-                if (userRepository == null) {
-                    userRepository = new BaseRepository<User>(_context);
-                }
-
-                return userRepository;
-            }
-        }
-
-
-        public async Task Save() {
-            await _context.SaveChangesAsync();
-        }
 
         private bool disposed = false;
 

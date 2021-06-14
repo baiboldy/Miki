@@ -7,42 +7,60 @@ using Microsoft.AspNetCore.Authorization;
 using Miki.AppDbContext;
 using Miki.Dtos;
 using Miki.Models;
+using Miki.Repositories.Interfaces;
 
 namespace Miki.Controllers
 {
-    [Authorize(Roles = "user")]
+    [Authorize(Roles = "user,admin")]
     [Route("[controller]")]
     public class ArticleController : Controller
     {
         private readonly MainDbContext _context;
+        private readonly IArticleRepository _articleRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public ArticleController(MainDbContext context, IUnitOfWork unitOfWork) {
+        public ArticleController(MainDbContext context, IArticleRepository articleRepository, IUnitOfWork unitOfWork) {
             _context = context;
+            _articleRepository = articleRepository;
             _unitOfWork = unitOfWork;
         }
         [HttpGet]
         public async Task<BaseReponse<List<ArticleDto>>> GetArticle()
         {
             var userIdentity = HttpContext.User.Identity;
-            var result = await _unitOfWork.ArticleRepository.GetAll();
-            var dtoResult = result.Select(_ => new ArticleDto {
-                Id = _.Id,
-                Name =  _.Name
-            }).ToList();
-
-            return new BaseReponse<List<ArticleDto>>(dtoResult);
+            var result = await _articleRepository.GetAllList();
+            return new BaseReponse<List<ArticleDto>>(result);
         }
 
         [HttpPost("add")]
-        public async Task<long> InsertArticle(ArticleDto articleDto) {
-            var article = new Article {
-                Name = articleDto.Name
-            }; 
-            await _unitOfWork.ArticleRepository.Create(article);
-            await _unitOfWork.Save();
-
-            return article.Id;
+        public async Task<long> InsertArticle([FromBody] ArticleDto articleDto)
+        {
+            using (var trans = _unitOfWork.BeginTransaction()) {
+                var article = new Article
+                {
+                    Name = articleDto.Name
+                };
+                await _articleRepository.Create(article);
+                await _articleRepository.Save();
+                Console.WriteLine(article.Id);
+                await trans.CommitAsync();
+                return article.Id;
+            }
+        }
+        [HttpPost("update")]
+        public async Task UpdateArticle([FromBody] ArticleDto articleDto)
+        {
+            using (var trans = _unitOfWork.BeginTransaction())
+            {
+                var article = new Article
+                {
+                    Id = articleDto.Id,
+                    Name = articleDto.Name
+                };
+                _articleRepository.Update(article);
+                await _articleRepository.Save();
+                await trans.CommitAsync();
+            }
         }
     }
 }

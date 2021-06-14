@@ -16,5 +16,6 @@ namespace Miki.Repositories.Interfaces
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
             string includeProperties = "");
         Task<T> GetById(long id);
+        Task Save();
     }
 }

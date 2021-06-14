@@ -16,9 +16,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Miki.AppDbContext;
+using Miki.Repositories.Impl;
+using Miki.Repositories.Interfaces;
 using Miki.Secure;
 using Miki.Services;
 using Miki.Services.Impl;
+using Miki.Services.Interface;
 
 namespace Miki
 {
@@ -51,7 +54,10 @@ namespace Miki
             });
             services.AddTransient<IJwtAuthenticationManager, JwtAuthenticationManager>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IArticleService, ArticleService>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IArticleRepository, ArticleRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Miki", Version = "v1" });
