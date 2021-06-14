@@ -35,7 +35,7 @@ namespace Miki.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<BaseReponse<bool>> Register(UserDto userDto) {
+        public async Task<BaseResponse<bool>> Register(UserDto userDto) {
             var result = await _userService.register(userDto);
             return result;
         }
