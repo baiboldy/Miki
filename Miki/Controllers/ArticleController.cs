@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Caching.Memory;
 using Miki.AppDbContext;
 using Miki.Dtos;
 using Miki.Models;
 using Miki.Repositories.Interfaces;
+using Miki.Services.Interface;
 
 namespace Miki.Controllers
 {
@@ -18,18 +20,29 @@ namespace Miki.Controllers
         private readonly MainDbContext _context;
         private readonly IArticleRepository _articleRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IArticleService _articleService;
+        private readonly IMemoryCache _memoryCache;
 
-        public ArticleController(MainDbContext context, IArticleRepository articleRepository, IUnitOfWork unitOfWork) {
+        public ArticleController(MainDbContext context, IArticleRepository articleRepository, IUnitOfWork unitOfWork, IArticleService articleService, IMemoryCache memoryCache) {
             _context = context;
             _articleRepository = articleRepository;
             _unitOfWork = unitOfWork;
+            _articleService = articleService;
+            _memoryCache = memoryCache;
         }
         [HttpGet]
-        public async Task<BaseReponse<List<ArticleDto>>> GetArticle()
+        public async Task<BaseResponse<List<ArticleDto>>> GetArticle()
         {
             var userIdentity = HttpContext.User.Identity;
             var result = await _articleRepository.GetAllList();
-            return new BaseReponse<List<ArticleDto>>(result);
+            return new BaseResponse<List<ArticleDto>>(result);
+        }
+
+        [HttpGet("id={id}")]
+        [AllowAnonymous]
+        public async Task<BaseResponse<ArticleDto>> GetById(long id) {
+            var dto = await _articleService.getById(id);
+            return dto;
         }
 
         [HttpPost("add")]

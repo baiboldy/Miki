@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 
 namespace Miki.Dtos
 {
-    public class BaseReponse<T>
+    public class BaseResponse<T>
     {
         public T Body { get; set; }
 
-        public BaseReponse(T body) {
+        public BaseResponse(T body) {
             Body = body;
         }
 
-        public BaseReponse(bool hasError, string error) {
+        public BaseResponse(bool hasError, string error) {
             HasError = hasError;
             Error = error;
         }

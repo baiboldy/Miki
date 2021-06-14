@@ -7,6 +7,7 @@ using Miki.Dtos;
 namespace Miki.Services.Interface
 {
     public interface IArticleService {
-        Task<BaseReponse<List<ArticleDto>>> getAll();
+        Task<BaseResponse<List<ArticleDto>>> getAll();
+        Task<BaseResponse<ArticleDto>> getById(long id);
     }
 }

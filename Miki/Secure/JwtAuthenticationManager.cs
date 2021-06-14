@@ -48,12 +48,13 @@ namespace Miki.Secure
 
             var handler = new JwtSecurityTokenHandler();
             var tokenKey = Encoding.ASCII.GetBytes(_key);
+            var claims = new List<Claim> {
+                new Claim(ClaimTypes.Sid, result.Id.ToString()),
+                new Claim(ClaimTypes.Name, result.Email),
+                new Claim(ClaimTypes.Role, result.Role.Code),
+            };
             var tokenDescriptor = new SecurityTokenDescriptor {
-                Subject = new ClaimsIdentity(new Claim[] {
-                    new Claim(ClaimTypes.Sid, result.Id.ToString()), 
-                    new Claim(ClaimTypes.Name, username),
-                    new Claim(ClaimTypes.Role, result.Role.Code), 
-                }),
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey),
                     SecurityAlgorithms.HmacSha256Signature)

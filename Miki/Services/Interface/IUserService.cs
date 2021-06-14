@@ -7,7 +7,7 @@ using Miki.Dtos;
 namespace Miki.Services
 {
     public interface IUserService {
-        Task<BaseReponse<bool>> register(UserDto user);
+        Task<BaseResponse<bool>> register(UserDto user);
 
     }
 }

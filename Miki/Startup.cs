@@ -49,7 +49,7 @@ namespace Miki
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetValue<string>("AuthKey"))),
                     ValidateIssuer = false,
-                    ValidateAudience = false,
+                    ValidateAudience = false
                 };
             });
             services.AddTransient<IJwtAuthenticationManager, JwtAuthenticationManager>();
@@ -58,6 +58,7 @@ namespace Miki
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IArticleRepository, ArticleRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddMemoryCache();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Miki", Version = "v1" });

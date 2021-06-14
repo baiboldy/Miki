@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 using Miki.AppDbContext;
 using Miki.Dtos;
 using Miki.Repositories.Interfaces;
@@ -18,12 +19,17 @@ namespace Miki.Services.Impl
             _unitOfWork = unitOfWork;
             _articleRepository = articleRepository;
         }
-        public async Task<BaseReponse<List<ArticleDto>>> getAll() {
+        public async Task<BaseResponse<List<ArticleDto>>> getAll() {
             using (var trans = _unitOfWork.BeginTransaction()) {
                 var all = await _articleRepository.GetAllList();
                 trans.Commit();
-                return new BaseReponse<List<ArticleDto>>(all);
+                return new BaseResponse<List<ArticleDto>>(all);
             }
+        }
+
+        public async Task<BaseResponse<ArticleDto>> getById(long id) {
+            var dto = await _articleRepository.GetByIdDto(id);
+            return new BaseResponse<ArticleDto>(dto);
         }
     }
 }

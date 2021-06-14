@@ -23,14 +23,14 @@ namespace Miki.Services.Impl
             _unitOfWork = unitOfWork;
             _userRepository = userRepository;
         }
-        public async Task<BaseReponse<bool>> register(UserDto userDto) {
+        public async Task<BaseResponse<bool>> register(UserDto userDto) {
             var hashed = Helpers.Hashing.ToMD5(userDto.Password);
             userDto.Password = hashed;
 
             var results = await _userRepository.GetAll(_ => _.Email == userDto.Email && _.Password == userDto.Password);
             if (results.Count() > 1)
             {
-                return new BaseReponse<bool>(true, "Такой пользователь уже сущетсвует");
+                return new BaseResponse<bool>(true, "Такой пользователь уже сущетсвует");
             }
 
             await _userRepository.Create(new User()
@@ -43,7 +43,7 @@ namespace Miki.Services.Impl
                 RoleId = userDto.Role.Id
             });
 
-            return new BaseReponse<bool>(false, "Пользователь успешно создан");
+            return new BaseResponse<bool>(false, "Пользователь успешно создан");
 
         }
     }
