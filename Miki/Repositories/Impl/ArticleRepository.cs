@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Miki.AppDbContext;
@@ -28,17 +29,18 @@ namespace Miki.Repositories.Impl
         public async Task<ArticleDto> GetByIdDto(long id)
         {
             ArticleDto dto;
-            if (!_memoryCache.TryGetValue(id, out dto)) {
+            if (!_memoryCache.TryGetValue(MethodBase.GetCurrentMethod().Name, out dto)) {
                 var result = await base.GetAll(_ => _.Id == id);
-                if (dto != null) {
-                    _memoryCache.Set(id, dto,
-                        new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(3)));
-                }
-
-                return result.Select(_ => new ArticleDto() {
+                dto = result.Select(_ => new ArticleDto() {
                     Id = _.Id,
                     Name = _.Name
                 }).FirstOrDefault();
+                if (dto != null) {
+                    _memoryCache.Set(MethodBase.GetCurrentMethod().Name, dto,
+                        new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(3)));
+                }
+
+                return dto;
             }
 
             return dto;
