@@ -46,7 +46,6 @@ namespace Miki.Repositories.Impl
                 IsDeleted = _.IsDeleted,
                 Lastname = _.Lastname,
                 Name = _.Name,
-                Password = _.Password,
                 Role = new RoleDto()
                 {
                     Id = _.Role.Id,

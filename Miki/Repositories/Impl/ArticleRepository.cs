@@ -19,17 +19,29 @@ namespace Miki.Repositories.Impl
             _memoryCache = memoryCache;
         }
         public async Task<List<ArticleDto>> GetAllList() {
-            var result = await base.GetAll();
-            return result.Select(_ => new ArticleDto() {
-                Id = _.Id,
-                Name = _.Name
-            }).ToList();
+            if (!_memoryCache.TryGetValue(MethodBase.GetCurrentMethod().Name, out List<ArticleDto> dtoResult)) {
+                var result = await base.GetAll();
+                dtoResult = result.Select(_ => new ArticleDto()
+                {
+                    Id = _.Id,
+                    Name = _.Name
+                }).ToList();
+
+                if (dtoResult.Count > 0)
+                {
+                    _memoryCache.Set(MethodBase.GetCurrentMethod().Name, dtoResult,
+                        new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(3)));
+                }
+
+                return dtoResult;
+            }
+
+            return dtoResult;
         }
 
         public async Task<ArticleDto> GetByIdDto(long id)
         {
-            ArticleDto dto;
-            if (!_memoryCache.TryGetValue(MethodBase.GetCurrentMethod().Name, out dto)) {
+            if (!_memoryCache.TryGetValue(MethodBase.GetCurrentMethod().Name, out ArticleDto dto)) {
                 var result = await base.GetAll(_ => _.Id == id);
                 dto = result.Select(_ => new ArticleDto() {
                     Id = _.Id,
