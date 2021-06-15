@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Miki.AppDbContext;
+using Miki.Models;
 using Miki.Models.Base;
 using Miki.Repositories.Interfaces;
 

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Miki.AppDbContext;
 using Miki.Dtos;
 using Miki.Models;
+using Miki.Models.Dictionary;
 using Miki.Repositories.Interfaces;
 
 namespace Miki.Repositories.Impl
@@ -34,7 +35,8 @@ namespace Miki.Repositories.Impl
                     Code = _.Code,
                     NameRu = _.NameRu,
                     NameEn = _.NameEn,
-                    NameKk = _.NameKk
+                    NameKk = _.NameKk,
+                    ItemId = _.ItemId
                 }).ToList();
 
                 if (roleDtos.Count > 0) {
