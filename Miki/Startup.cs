@@ -58,6 +58,7 @@ namespace Miki
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IArticleRepository, ArticleRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IRoleRepository, RoleRepository>();
             services.AddMemoryCache();
             services.AddSwaggerGen(c =>
             {

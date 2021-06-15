@@ -10,7 +10,7 @@ namespace Miki.Repositories.Interfaces
         Task Create(T item);
         void Update(T item);
         void Delete(long id);
-        void Delete(T item);
+        //void Delete(T item);
         Task<IQueryable<T>> GetAll(
             Expression<Func<T, bool>> filter = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
