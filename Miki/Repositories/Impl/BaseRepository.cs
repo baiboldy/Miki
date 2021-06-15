@@ -32,16 +32,18 @@ namespace Miki.Repositories.Impl
 
         public virtual async void Delete(long id) {
             var entity = await dbSet.FindAsync(id);
-            Delete(entity);
+            //Не будем удалять, а просто поменяем статус на true isDeleted
+            //Delete(entity);
+            entity.IsDeleted = true;
         }
 
-        public virtual void Delete(T item) {
-            if (_context.Entry(item).State == EntityState.Detached) {
-                dbSet.Attach(item);
-            }
+        //public virtual void Delete(T item) {
+        //    if (_context.Entry(item).State == EntityState.Detached) {
+        //        dbSet.Attach(item);
+        //    }
 
-            dbSet.Remove(item);
-        }
+        //    dbSet.Remove(item);
+        //}
 
         public virtual async Task<IQueryable<T>> GetAll(
             Expression<Func<T, bool>> filter = null,

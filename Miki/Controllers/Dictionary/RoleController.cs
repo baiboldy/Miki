@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Miki.AppDbContext;
 using Miki.Dtos;
-using Miki.Models;
 using Miki.Models.Dictionary;
 using Miki.Repositories.Interfaces;
 
